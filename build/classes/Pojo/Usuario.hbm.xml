@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02/05/2017 11:18:01 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="huelladigital" name="Pojo.Usuario" optimistic-lock="version" table="usuario">
+    <id name="id_usuario" type="java.lang.Integer">
+      <column name="id_usuario"/>
+      <generator class="identity"/>
+    </id>
+    <property name="tipo_doc" type="string">
+      <column length="45" name="tipo_doc"/>
+    </property>
+    <property name="nro_doc" type="java.lang.Integer">
+      <column name="nro_doc" unique="true"/>
+    </property>
+    <property name="nombre" type="string">
+      <column length="45" name="nombre"/>
+    </property>
+    <property name="apellido1" type="string">
+      <column length="45" name="apellido1"/>
+    </property>
+    <property name="apellido2" type="string">
+      <column length="45" name="apellido2"/>
+    </property>
+    <property name="matricula" type="java.lang.Integer">
+      <column name="matricula"/>
+    </property>
+    <property name="categoria" type="string">
+      <column length="45" name="categoria"/>
+    </property>
+    <property name="mail" type="string">
+      <column length="45" name="mail"/>
+    </property>
+    <property name="password" type="string">
+      <column length="150" name="password"/>
+    </property>
+    <property name="foto" type="string">
+      <column length="45" name="foto"/>
+    </property>
+    <property name="telefono" type="string">
+      <column length="45" name="telefono"/>
+    </property>
+    <property name="sexo" type="string">
+      <column length="45" name="sexo"/>
+    </property>
+    <property name="fechaNacimiento" type="string">
+      <column length="45" name="fechaNacimiento"/>
+    </property>
+    <property name="fechaAlta" type="timestamp">
+      <column length="0" name="fechaAlta"/>
+    </property>
+    <property name="grupoSanguineo" type="string">
+      <column length="45" name="grupoSanguineo"/>
+    </property>
+    <property name="estadoCivil" type="string">
+      <column length="45" name="estadoCivil"/>
+    </property>
+    <property name="rol" type="string">
+      <column length="45" name="rol"/>
+    </property>
+    <property name="estado" type="string">
+      <column length="45" name="estado"/>
+    </property>
+  </class>
+</hibernate-mapping>
