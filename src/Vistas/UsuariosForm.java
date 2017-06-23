@@ -8,23 +8,13 @@ package Vistas;
 import Controller.UsuarioController;
 import DAO.UsuarioDAO;
 import Pojo.Usuario;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.json.Json;
-import javax.json.JsonObject;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 /**
  *
  * @author ASUS555
@@ -38,29 +28,25 @@ public class UsuariosForm extends javax.swing.JFrame {
     
     public UsuariosForm() {
         initComponents();
-        
-        
+                
         List<Usuario> lista = us.listUsuario();
-        // List<Usuario> lista = new ArrayList<>();
-        //lista.add(DAO.FindByDoc("25698455"));
         
         model = (DefaultTableModel) tbl_usuario.getModel();
-     
+        model.setNumRows(0);
         Iterator it = lista.iterator();
         Object RowTable[] = new Object[7];
        
-
-        while(it.hasNext()){
-              
-         Usuario user = (Usuario) it.next();
-         RowTable[0] =  user.getId_usuario();
-         RowTable[1] =  user.getNombre();
-         RowTable[2] =  user.getApellido1()+" "+user.getApellido2();
-         RowTable[3] =  user.getNroDoc();
-         RowTable[4] =  user.getCategoria();
-         RowTable[5] =  user.getMail();
-         RowTable[6] =  user.getEstado();
-         model.addRow(RowTable);
+        //Recorre la lista de Usuarios y setea los valores a la tabla.
+        while(it.hasNext()){                         
+            Usuario user = (Usuario) it.next();
+            RowTable[0] =  user.getId_usuario();
+            RowTable[1] =  user.getApellido1()+" "+user.getApellido2();
+            RowTable[2] =  user.getNombre();
+            RowTable[3] =  user.getNroDoc();
+            RowTable[4] =  user.getCategoria();
+            RowTable[5] =  user.getMail();
+            RowTable[6] =  user.getEstado();
+            model.addRow(RowTable);
         }
         
        
@@ -80,15 +66,21 @@ public class UsuariosForm extends javax.swing.JFrame {
         tbl_usuario = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         txt_Buscar = new javax.swing.JTextField();
+        btn_buscar = new javax.swing.JButton();
+        btn_listar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Lista de Usuarios");
+        setLocation(new java.awt.Point(0, 0));
+        setPreferredSize(new java.awt.Dimension(1200, 800));
+        setSize(new java.awt.Dimension(800, 600));
 
         tbl_usuario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Nombre", "Apellidos", "DNI", "Categoria", "mail", "Estado"
+                "ID", "Apellidos", "Nombre", "DNI", "Categoria", "mail", "Estado"
             }
         ));
         tbl_usuario.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -104,9 +96,28 @@ public class UsuariosForm extends javax.swing.JFrame {
         jLabel1.setText("Buscar:");
 
         txt_Buscar.setText("Nombre, Apellido, DNI.");
+        txt_Buscar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txt_BuscarMouseClicked(evt);
+            }
+        });
         txt_Buscar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_BuscarKeyReleased(evt);
+            }
+        });
+
+        btn_buscar.setText("Buscar");
+        btn_buscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_buscarActionPerformed(evt);
+            }
+        });
+
+        btn_listar.setText("Listar Usuarios");
+        btn_listar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_listarActionPerformed(evt);
             }
         });
 
@@ -115,25 +126,37 @@ public class UsuariosForm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1354, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38)
+                        .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_listar, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(553, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(2, 2, 2)
+                            .addComponent(txt_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_listar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -141,26 +164,22 @@ public class UsuariosForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tbl_usuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_usuarioMouseClicked
+        
         String cadena="";
         int row = tbl_usuario.rowAtPoint(evt.getPoint());
         
         if (row >= 0 && tbl_usuario.isEnabled())
         {
-            
+            //Obtenemos el ID del usuario Seleccionado.
             cadena = tbl_usuario.getValueAt(row, 0).toString();
-           /* for (int i=0; i < tbl_usuario.getColumnCount();i++)
-            {
-               cadena=cadena + " " +  tbl_usuario.getValueAt(row,i).toString();
-            }*/
+           
         }
-
-        //JOptionPane.showMessageDialog(null, cadena);
+        
+        //Pasamos parametros a la otra vista.
         CapturarHuella cp = new CapturarHuella();
         cp.set_ID(cadena);
-        //JOptionPane.showMessageDialog(null,   cp.getId_Usuario());
         cp.setVisible(true);
         cp.EventoInicializar();
-        //this.setVisible(false);
         this.dispose();
         
     }//GEN-LAST:event_tbl_usuarioMouseClicked
@@ -192,6 +211,61 @@ public class UsuariosForm extends javax.swing.JFrame {
     private void txt_BuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_BuscarKeyReleased
      filter(txt_Buscar.getText());
     }//GEN-LAST:event_txt_BuscarKeyReleased
+
+    private void btn_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_buscarActionPerformed
+            
+       List<Usuario> lista = us.FindUser(txt_Buscar.getText());
+                
+        if(lista == null){
+            JOptionPane.showMessageDialog(this, "No se pudo encontrar el Usuario.", "Buscar Usuario", JOptionPane.PLAIN_MESSAGE, new ImageIcon(this.getClass().getResource("/Images/icono_user.png")));
+        }else{
+                model = (DefaultTableModel) tbl_usuario.getModel();
+                model.setNumRows(0);
+                Iterator it = lista.iterator();
+                Object RowTable[] = new Object[7];
+
+                //Recorre la lista de Usuarios y setea los valores a la tabla.
+                while(it.hasNext()){                         
+                    Usuario user = (Usuario) it.next();
+                    RowTable[0] =  user.getId_usuario();
+                    RowTable[1] =  user.getApellido1()+" "+user.getApellido2();
+                    RowTable[2] =  user.getNombre();
+                    RowTable[3] =  user.getNroDoc();
+                    RowTable[4] =  user.getCategoria();
+                    RowTable[5] =  user.getMail();
+                    RowTable[6] =  user.getEstado();
+                    model.addRow(RowTable);
+                }
+        }
+    }//GEN-LAST:event_btn_buscarActionPerformed
+
+    private void btn_listarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_listarActionPerformed
+       
+        
+        List<Usuario> lista = us.listUsuario();
+        model = (DefaultTableModel) tbl_usuario.getModel();
+        model.setNumRows(0);
+        Iterator it = lista.iterator();
+        Object RowTable[] = new Object[7];
+       
+        //Recorre la lista de Usuarios y setea los valores a la tabla.
+        while(it.hasNext()){                         
+            Usuario user = (Usuario) it.next();
+            RowTable[0] =  user.getId_usuario();
+            RowTable[1] =  user.getApellido1()+" "+user.getApellido2();
+            RowTable[2] =  user.getNombre();
+            RowTable[3] =  user.getNroDoc();
+            RowTable[4] =  user.getCategoria();
+            RowTable[5] =  user.getMail();
+            RowTable[6] =  user.getEstado();
+            model.addRow(RowTable);
+        }
+        txt_Buscar.setText(null);
+    }//GEN-LAST:event_btn_listarActionPerformed
+
+    private void txt_BuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_BuscarMouseClicked
+        txt_Buscar.setText("");
+    }//GEN-LAST:event_txt_BuscarMouseClicked
 
     
    
@@ -232,6 +306,8 @@ public class UsuariosForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_buscar;
+    private javax.swing.JButton btn_listar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbl_usuario;

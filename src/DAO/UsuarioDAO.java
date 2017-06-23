@@ -23,6 +23,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,34 +37,12 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.json.JSONException;
 import org.json.JSONObject;
+import util.Util;
 
 
 public class UsuarioDAO {
     
-    
-      
-    public List<Usuario> listUsuarioOLD() {
-        Session session = null;
-        try {
-            session = HibernateConnector.getInstance().getSession();
-            Query query = session.createQuery("from Usuario");
-            
-            List list = query.list();
-            
-            if (list != null && list.isEmpty()) {
-                return null;
-            } else {
-                System.out.println("Lista Usuarios: " + list);
-                return (List<Usuario>)list;
-            }
-            
-        } catch (Exception e) {
-            System.err.println("ERROR: Lista de Usuarios" + e.getMessage());
-            return null;
-        }finally{
-            session.close();
-        }
-    }
+    private Util util = new Util();
     
     public List<Usuario> listUsuario() {
        
@@ -99,61 +79,110 @@ public class UsuarioDAO {
             }
             
         } catch (Exception e) {
-            System.err.println("ERROR: Lista de Usuarios" + e.getMessage());
+            System.err.println("ERROR: Lista de Usuarios - " + e.getMessage());
             return null;
         }
     }
     
-    public Usuario FindByDoc(String doc) {
+    public List<Usuario> FindUsuario(String cad) {
+       
+        try {
+            
+            String uri = "http://localhost:8080/SistemaHistoria/rest/usuario/search/";
+            cad = util.hardCodeCaracteres(cad);
+            
+            System.out.println("URI: " + uri.concat(cad));
+            //URL url = new URL("http://localhost:8080/SistemaHistoria/rest/usuario/buscar/16596335");
+            URL url = new URL(uri.concat(cad));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Accept-Charset", "UTF-8");
+            
+
+            if (conn.getResponseCode() != 200) {
+                    //throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+                    System.err.println("Failed : HTTP error code : " + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            String output;
+            String buffer = "";
+            System.out.println("Output from Server .... \n");
+            while ((output = br.readLine()) != null) {
+                    System.out.println(output);
+                    
+                    buffer = output;
+            
+            }
+            conn.disconnect();
+                      
+            //Convert JSON List to List<Usuario>
+            util.hardCodeCaracteres(buffer);
+            Gson gson = new Gson();
+            Type tipoListaUsuarios = new TypeToken<List<Usuario>>(){}.getType();
+            List<Usuario> list = gson.fromJson(buffer, tipoListaUsuarios);
+            
+            if (list != null && list.isEmpty()) {
+                return null;
+            } else {
+                System.out.println("Lista Usuarios: " + list);
+                return (List<Usuario>)list;
+            }
+            
+        } catch (NullPointerException|IOException|IllegalStateException e) {
+            System.err.println("ERROR: Lista de Usuarios - " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public Usuario findByDoc(String doc) {
        
          try {
+             
+            String uri = "http://localhost:8080/SistemaHistoria/rest/usuario/buscar/";
+            System.out.println("URI: " + uri.concat(doc));
+            //URL url = new URL("http://localhost:8080/SistemaHistoria/rest/usuario/buscar/16596335");
+            URL url = new URL(uri.concat(doc));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
 
-                String uri = "http://localhost:8080/SistemaHistoria/rest/usuarios/";
-                System.out.println("URI: " + uri.concat(doc));
-                URL url = new URL("http://localhost:8080/SistemaHistoria/rest/usuarios/16596335");
-                //URL url = new URL(uri);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		conn.setRequestProperty("Accept", "application/json");
 
-                
-            
-		if (conn.getResponseCode() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ conn.getResponseCode());
-		}
+            if (conn.getResponseCode() != 200) {
+                    //throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+                    System.err.println("Failed : HTTP error code : " + conn.getResponseCode());
+            }
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-			(conn.getInputStream())));
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
 
-		String output;
-                String buffer = "";
-		System.out.println("Output from Server .... \n");
-		while ((output = br.readLine()) != null) {
-			System.out.println(output);
-                        buffer = output;
-		}
-		conn.disconnect();
+            String output;
+            String buffer = "";
+            System.out.println("Output from Server .... \n");
+            while ((output = br.readLine()) != null) {
+                    System.out.println(output);
+                    buffer = output;
+            }
+            conn.disconnect();
 
-                JSONObject json = new JSONObject(buffer);
-                    Usuario user = new Usuario((Integer)json.get("id_usuario"),(Integer)json.get("dni"),(String)json.get("nombre"), 
+            JSONObject json = new JSONObject(buffer);
+                Usuario user = new Usuario((Integer)json.get("id_usuario"),
+                    (Integer)json.get("nro_doc"),(String)json.get("nombre"), 
                     (String)json.get("apellido1"),(String)json.get("apellido2"),
                     (String)json.get("categoria"), (String)json.get("mail"),
                     (String)json.get("estado"));
-                    
-                return user;
+
+            return user;
 	  } catch (MalformedURLException e) {
-
-		e.printStackTrace();
+                Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, e);
                 return null;
-	  } catch (IOException e) {
-
-		e.printStackTrace();
+	  } catch (IOException | JSONException e) {
+                Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, e);
                 return null;
-	  } catch (JSONException ex) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        } 
+	  } 
 
     }
     
@@ -180,7 +209,7 @@ public class UsuarioDAO {
         Session session = null;
         try {
             session = HibernateConnector.getInstance().getSession();
-            Query query = session.createSQLQuery("select * from usuario where concat(nro_doc,' ',nombre,' ',apellido1,' ', apellido2) LIKE '%"+cadena +"%';");
+            Query query = session.createSQLQuery("select * from usuario where concat(nro_doc,' ',nombre,' ',apellido1,' ', apellido2) LIKE '%"+ cadena +"%';");
             
            List list = query.list();
             
@@ -210,6 +239,5 @@ public class UsuarioDAO {
     public void deleteUser(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
     
 }

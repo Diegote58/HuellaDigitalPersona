@@ -35,12 +35,12 @@ public class UsuarioController {
       /*  public Usuario FindbyID(int id) throws JSONException{
            return userDAO.findUserByDni(id);
         }
-
-        public Usuario FindbyDNI(int id){
-            return userDAO.findUserByDni(id);
-        }*/
+*/
+        public Usuario findbyDoc(String doc){
+            return userDAO.findByDoc(doc);
+        }
 
         public List<Usuario> FindUser(String cad){
-            return userDAO.FindUser(cad);
+            return userDAO.FindUsuario(cad);
         }
 }

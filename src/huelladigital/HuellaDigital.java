@@ -16,6 +16,7 @@ import Vistas.UsuariosForm;
 
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -29,8 +30,8 @@ public class HuellaDigital {
        // CapturarHuella cp = new CapturarHuella();
         //cp.setVisible(true);
         
-        UsuariosForm cp = new UsuariosForm();
-       cp.setVisible(true);
+        UsuariosForm form = new UsuariosForm();
+        form.setVisible(true);
               
         
      /*   UsuarioController us = new UsuarioController();
