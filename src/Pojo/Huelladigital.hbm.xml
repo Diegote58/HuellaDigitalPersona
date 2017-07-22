@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02/05/2017 11:18:01 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="huelladigital" name="Pojo.Huelladigital" optimistic-lock="version" table="huelladigital">
+    <id name="id_huella" type="java.lang.Integer">
+      <column name="id_huella"/>
+      <generator class="identity"/>
+    </id>
+    <property name="id_usuario" type="int">
+      <column name="id_usuario" not-null="true"/>
+    </property>
+    <property name="dedo" type="string">
+      <column length="45" name="dedo" not-null="true"/>
+    </property>
+    <property name="huella" type="binary">
+      <column name="huella"/>
+    </property>
+  </class>
+</hibernate-mapping>
